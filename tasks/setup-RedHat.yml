@@ -1,8 +1,14 @@
 ---
-- name: Update postfix to the latest version (if extra repositories enabled).
-  yum: "name=postfix state=latest enablerepo={{ mysql_enablerepo }}"
-  when: mysql_enablerepo != ""
+#- name: Update postfix to the latest version (if extra repositories enabled).
+#  yum: "name=postfix state=latest enablerepo={{ mysql_enablerepo }}"
+#  when: mysql_enablerepo != ""
+
+- name: Install Remote RPM
+  yum: "name={{ mysql_enablerepo }} state=present"
 
 - name: Ensure MySQL packages are installed.
-  yum: "name={{ item }} state=installed enablerepo={{ mysql_enablerepo }}"
+  yum: "name={{ item }} state=installed enablerepo={{ mysql_reponame }}"
   with_items: mysql_packages
+
+- name: Bag in frunte
+  file: path=/var/log/mysql.err owner=mysql group=mysql state=touch
